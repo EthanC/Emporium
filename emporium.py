@@ -45,16 +45,18 @@ class Emporium:
         if image is not True:
             return
 
-        updated: str = store.get("lastUpdated")
-
         if self.config["thirdParties"]["twitter"].get("enabled") is True:
-            Emporium.ShareTwitter(self, updated)
+            Emporium.ShareTwitter(self, store)
 
         if self.config["thirdParties"]["discord"].get("enabled") is True:
-            Emporium.ShareDiscord(self, updated)
+            Emporium.ShareDiscord(self, store)
 
         if self.config["thirdParties"]["reddit"].get("enabled") is True:
             Emporium.ShareReddit(self, store)
+
+        Utility.WriteFile(self, "latest.txt", store.get("hash"))
+
+        log.info("Saved the latest Store hash")
 
     def LoadConfiguration(self: Any) -> Optional[Dict[str, Any]]:
         """Load the configurable values from config.json"""
@@ -80,9 +82,10 @@ class Emporium:
             return None
 
         store: Dict[str, Any] = data.get("data")
-        updated: str = Utility.ISOtoHuman(self, store.get("lastUpdated"))
+        updateDate: str = Utility.ISOtoHumanDate(self, store.get("lastUpdated"))
+        updateTime: str = Utility.ISOtoHumanTime(self, store.get("lastUpdated"))
 
-        log.info(f"Fetched the Store for {updated}")
+        log.info(f"Fetched the Store for {updateDate} at {updateTime} UTC")
 
         return store
 
@@ -104,7 +107,7 @@ class Emporium:
         localHash: str = Utility.ReadFile(self, "latest.txt")
 
         if localHash == apiHash:
-            log.info("Store has not updated, local hash matches API hash")
+            log.info("The Store has not updated, the local hash matches the API hash")
 
             return False
         else:
@@ -135,7 +138,9 @@ class Emporium:
             return None
         else:
             return {
-                "lastUpdated": Utility.ISOtoHuman(self, data.get("lastUpdated")),
+                "updateDate": Utility.ISOtoHumanDate(self, data.get("lastUpdated")),
+                "updateTime": Utility.ISOtoHumanTime(self, data.get("lastUpdated")),
+                "hash": data.get("hash"),
                 "featured": featured,
                 "operators": operators,
                 "blueprints": blueprints,
@@ -172,7 +177,7 @@ class Emporium:
             gameLogo, Utility.CenterX(self, gameLogo.width, store.width, 50), gameLogo
         )
 
-        prettyDate: str = data.get("lastUpdated")
+        prettyDate: str = data.get("updateDate")
         textWidth, _ = font72.getsize(prettyDate)
         canvas.text(
             Utility.CenterX(self, textWidth, store.width, 275), prettyDate, text, font72
@@ -298,9 +303,11 @@ class Emporium:
 
         return card
 
-    def ShareTwitter(self: Any, updated: str) -> None:
+    def ShareTwitter(self: Any, store: Dict[str, Any]) -> None:
         """Share the latest Store to the configured Twitter account."""
 
+        updateDate: str = store.get("updateDate")
+        updateTime: str = store.get("updateTime")
         creatorCode: str = self.config["preferences"].get("creatorCode")
         apiKey: str = self.config["thirdParties"]["twitter"].get("apiKey")
         apiSecret: str = self.config["thirdParties"]["twitter"].get("apiSecret")
@@ -315,7 +322,7 @@ class Emporium:
             timeout=30,
         )
 
-        body: str = f"#ModernWarfare and #Warzone Store for {updated}\n\n"
+        body: str = f"#ModernWarfare and #Warzone Store for {updateDate} at {updateTime} UTC\n\n"
 
         if creatorCode is not None:
             body += f"Consider supporting us! Use the Creator Code {creatorCode} in the Store to do so.\n\n"
@@ -341,16 +348,18 @@ class Emporium:
 
         log.info("Shared the Store to Twitter")
 
-    def ShareDiscord(self: Any, updated: str) -> None:
+    def ShareDiscord(self: Any, store: Dict[str, Any]) -> None:
         """Share the latest Store to the configured Discord webhooks."""
 
+        updateDate: str = store.get("updateDate")
+        updateTime: str = store.get("updateTime")
         creatorCode: str = self.config["preferences"].get("creatorCode")
         hepToken: str = self.config["thirdParties"]["discord"].get("hepToken")
         username: str = self.config["thirdParties"]["discord"].get("username")
         avatar: str = self.config["thirdParties"]["discord"].get("avatarUrl")
         webhooks: List[str] = self.config["thirdParties"]["discord"].get("webhookUrls")
 
-        body: str = f"Modern Warfare and Warzone Store for {updated}\n\n"
+        body: str = f"Modern Warfare and Warzone Store for {updateDate} at {updateTime} UTC\n\n"
 
         if creatorCode is not None:
             body += f"Consider supporting us! Use the Creator Code `{creatorCode}` in the Store to do so."
@@ -384,10 +393,7 @@ class Emporium:
         count: int = 0
 
         for webhook in webhooks:
-            try:
-                Utility.POST(self, webhook, headers=headers, data=embed)
-            except:
-                continue
+            Utility.POST(self, webhook, headers=headers, data=embed)
 
             count += 1
 
@@ -403,7 +409,8 @@ class Emporium:
         secret: str = self.config["thirdParties"]["reddit"].get("clientSecret")
         subreddits: List[str] = self.config["thirdParties"]["reddit"].get("communities")
 
-        updated: str = store.get("lastUpdated")
+        updateDate: str = store.get("updateDate")
+        updateTime: str = store.get("updateDate")
         featured: List[Dict[str, Any]] = store.get("featured")
         operators: List[Dict[str, Any]] = store.get("operators")
         blueprints: List[Dict[str, Any]] = store.get("blueprints")
@@ -428,7 +435,7 @@ class Emporium:
             community: praw.reddit.Subreddit = reddit.subreddit(subreddit.get("name"))
 
             post: praw.reddit.Submission = community.submit_image(
-                f"Modern Warfare and Warzone Store for {updated}",
+                f"Modern Warfare and Warzone Store for {updateDate} at {updateTime} UTC",
                 "store.png",
                 subreddit.get("flairId"),
                 subreddit.get("flairText"),

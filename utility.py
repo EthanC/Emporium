@@ -149,20 +149,41 @@ class Utility:
 
         return res.get("url")
 
-    def ISOtoHuman(self: Any, date: str) -> str:
-        """Return the provided ISO8601 timestamp in human-readable format."""
+    def ISOtoHumanDate(self: Any, timestamp: str) -> str:
+        """Return the provided ISO8601 timestamp in human-readable date format."""
 
-        date: str = date.split("T")[0]
+        timestamp: str = timestamp.split("T")[0]
 
         try:
             # Unix-supported zero padding removal
-            return datetime.strptime(date, "%Y-%m-%d").strftime("%A, %B %-d, %Y")
+            return datetime.strptime(timestamp, "%Y-%m-%d").strftime("%A, %B %-d, %Y")
         except ValueError:
             try:
                 # Windows-supported zero padding removal
-                return datetime.strptime(date, "%Y-%m-%d").strftime("%A, %B %#d, %Y")
+                return datetime.strptime(timestamp, "%Y-%m-%d").strftime(
+                    "%A, %B %#d, %Y"
+                )
             except Exception as e:
-                log.error(f"Failed to convert timestamp to human-readable format, {e}")
+                log.error(
+                    f"Failed to convert timestamp to human-readable date format, {e}"
+                )
+
+    def ISOtoHumanTime(self: Any, timestamp: str) -> str:
+        """Return the provided ISO8601 timestamp in human-readable time format."""
+
+        timestamp: str = timestamp.split("T")[1].split("+")[0]
+
+        try:
+            # Unix-supported zero padding removal
+            return datetime.strptime(timestamp, "%H-%M-%S").strftime("%I:%M %p")
+        except ValueError:
+            try:
+                # Windows-supported zero padding removal
+                return datetime.strptime(timestamp, "%H:%M:%S").strftime("%I:%M%p")
+            except Exception as e:
+                log.error(
+                    f"Failed to convert timestamp to human-readable time format, {e}"
+                )
 
     def NowISO(self: Any) -> str:
         """Return the current UTC timestamp in ISO format."""
