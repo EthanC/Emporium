@@ -410,7 +410,7 @@ class Emporium:
         subreddits: List[str] = self.config["thirdParties"]["reddit"].get("communities")
 
         updateDate: str = store.get("updateDate")
-        updateTime: str = store.get("updateDate")
+        updateTime: str = store.get("updateTime")
         featured: List[Dict[str, Any]] = store.get("featured")
         operators: List[Dict[str, Any]] = store.get("operators")
         blueprints: List[Dict[str, Any]] = store.get("blueprints")
