@@ -127,3 +127,18 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Visual Studio Code
+.vscode/
+
+# Credentials
+config.json
+
+# Output
+latest.txt
+store.png
+store_compressed.png
+
+# Fonts
+# https://fonts.google.com/specimen/Rajdhani
+*.ttf

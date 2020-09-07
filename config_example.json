@@ -1,0 +1,43 @@
+{
+    "preferences": {
+        "creatorCode": "TRN"
+    },
+    "appearance": {
+        "background": [30, 36, 43],
+        "text": [239, 239, 239],
+        "font": "Rajdhani-Medium"
+    },
+    "thirdParties": {
+        "twitter": {
+            "enabled": true,
+            "apiKey": "XXXXXXXXXX",
+            "apiSecret": "XXXXXXXXXX",
+            "accessToken": "XXXXXXXXXX",
+            "accessSecret": "XXXXXXXXXX"
+        },
+        "discord": {
+            "enabled": true,
+            "username": "Tracker",
+            "avatarUrl": "https://i.hep.gg/x1vphWfhx",
+            "hepToken": "XXXXXXXXXX",
+            "webhookUrls": [
+                "https://canary.discordapp.com/api/webhooks/XXXXXXXXXX/XXXXXXXXXX"
+            ]
+        },
+        "reddit": {
+            "enabled": true,
+            "username": "XXXXXXXXXX",
+            "password": "XXXXXXXXXX",
+            "clientId": "XXXXXXXXXX",
+            "clientSecret": "XXXXXXXXXX",
+            "communities": [
+                {
+                    "name": "ModernWarfare",
+                    "flairId": "XXXXXXXXXX",
+                    "flairText": "News",
+                    "collectionId": "XXXXXXXXXX"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "emporium"
+version = "1.0.0"
+description = "Call of Duty: Modern Warfare and Warzone Store generator."
+authors = ["Ethan C <EthanC@GitHub.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+httpx = "^0.14.1"
+coloredlogs = "^14.0"
+python-twitter = "^3.5"
+pillow = "^7.2.0"
+praw = "^7.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^19.10b0"
+pylint = "^2.5.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
