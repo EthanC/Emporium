@@ -1,5 +1,6 @@
 {
     "preferences": {
+        "verify": true,
         "creatorCode": "TRN"
     },
     "appearance": {

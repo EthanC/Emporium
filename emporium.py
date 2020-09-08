@@ -132,19 +132,26 @@ class Emporium:
             else:
                 log.warning(f"Unknown Bundle typeKey found: {typeKey}")
 
-        if (len(featured) == 0) and (len(operators) == 0) and (len(blueprints) == 0):
-            log.error("Failed to process Store data")
+        lenF: int = len(featured)
+        lenO: int = len(operators)
+        lenB: int = len(blueprints)
 
-            return None
-        else:
-            return {
-                "updateDate": Utility.ISOtoHumanDate(self, data.get("lastUpdated")),
-                "updateTime": Utility.ISOtoHumanTime(self, data.get("lastUpdated")),
-                "hash": data.get("hash"),
-                "featured": featured,
-                "operators": operators,
-                "blueprints": blueprints,
-            }
+        if (lenF == 0) or (lenO == 0) or (lenB == 0):
+            if self.config["preferences"].get("verify") is True:
+                log.error(
+                    f"Failed to process the Store (Featured: {lenF:,}, Operators: {lenO:,}, Blueprints: {lenB:,})"
+                )
+
+                return None
+
+        return {
+            "updateDate": Utility.ISOtoHumanDate(self, data.get("lastUpdated")),
+            "updateTime": Utility.ISOtoHumanTime(self, data.get("lastUpdated")),
+            "hash": data.get("hash"),
+            "featured": featured,
+            "operators": operators,
+            "blueprints": blueprints,
+        }
 
     def BuildImage(self: Any, data: Dict[str, Any]) -> bool:
         """Generate a stylized image for the provided Store data."""
