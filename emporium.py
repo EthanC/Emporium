@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 from sys import exit
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -19,7 +20,7 @@ class Emporium:
     def Initialize(self: Any) -> None:
         """Configure the application and begin its main functionality."""
 
-        print("Emporium: Modern Warfare and Warzone Store generator")
+        print("Emporium: Modern Warfare and Warzone Store Generator")
         print("https://github.com/EthanC/Emporium\n")
 
         if (config := Emporium.LoadConfiguration(self)) is None:
@@ -272,7 +273,10 @@ class Emporium:
         x += 50
         y += (
             75
-            + ((460 + 50) * (max(len(featured), len(operators), len(blueprints)) // 2))
+            + (
+                (460 + 50)
+                * ceil(max(len(featured), len(operators), len(blueprints)) / 2)
+            )
         ) + 50
 
         return (x, y)
